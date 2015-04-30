@@ -1,0 +1,25 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+
+use LWP::UserAgent;
+my $ua = LWP::UserAgent->new;
+sub blast {
+    my $response = $ua->post(
+        'http://indra.mullins.microbiol.washington.edu/masterblaster/blast',
+        {
+            @_,
+            dust => 'no',
+            max_target_seqs => 10,
+        }
+    );
+    die "Request failed: ", $response->status_line
+        unless $response->is_success;
+    return $response->decoded_content;
+}
+
+my $xml = blast( db => 'GRCh38.p2', query => 'ATCG' );
+print $xml;
+
+# Available databases are listed here:
+#   http://indra.mullins.microbiol.washington.edu/masterblaster/databases
