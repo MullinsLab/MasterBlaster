@@ -11,8 +11,15 @@ package MasterBlaster::Web {
     use Path::Tiny;
     use Types::Standard qw< :types >;
     use HTTP::Status qw< :constants >;
+    use Plack::App::File;
     use FindBin qw< $Bin >;
     use namespace::clean;
+
+    has readme => (
+        is      => 'ro',
+        isa     => InstanceOf['Path::Tiny'],
+        default => sub { path($Bin)->child("README.html") },
+    );
 
     has blast_runner => (
         is      => 'ro',
@@ -79,6 +86,10 @@ package MasterBlaster::Web {
                         : "Internal error"
                 );
             };
+        },
+        sub (GET + /) {
+            state $readme = Plack::App::File->new(file => $_[0]->readme);
+            $readme;
         },
     }
 

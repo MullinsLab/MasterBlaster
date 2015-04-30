@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Master Blaster API</title>
+        <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+        <style type="text/css">
+            code {
+                color: inherit;
+            }
+        </style>
+    </head>
+    <body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6">
+                <h1>Master Blaster</h1>
+                <p>
+                    A simple web API for BLAST which returns results as XML.
+                </p>
+
+                <h2>Endpoints</h2>
+                <h3><code>GET .../databases</code></h3>
+                <p>
+                  Returns a list of supported databases, one per line, valid
+                  for the <code>db</code> parameter.
+                </p>
+                <h3><code>POST .../blast</code></h3>
+                <p>
+                    Requires the POST parameters <code>db</code> and
+                    <code>query</code> to select the BLAST database and query
+                    sequence.  The query sequence must be nucleotides.
+                </p>
+                <p>
+                    Optional parameters are:
+                </p>
+                <table class="table table-condensed">
+                  <thead>
+                    <tr><th>Parameter</th><th>Description</th></tr>
+                  </thead>
+                  <tr>
+                    <td><code>max_target_seqs</code></td>
+                    <td>
+                      Positive integer to use for <code>-max_target_seqs</code>
+                      option to blastn.  Defaults to 10.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><code>dust</code></td>
+                    <td>
+                      String used for the <code>-dust</code> option to blastn.
+                      Unused by default.  You may wish to set this to
+                      <code>no</code>, for example.
+                    </td>
+                  </tr>
+                </table>
+                <p>
+                    On success (HTTP 200) the response body is the XML output
+                    by BLAST.  Both HTTP 4xx and 5xx status codes are used on
+                    failure with plain text bodies containing an error message.
+                </p>
+                <p>
+                    The <code>format</code> parameter may be set to
+                    <code>csv</code> to return comma-separated values partially
+                    representating the full results.  <code>format</code> may
+                    also be explicitly set to <code>json</code>, though there is
+                    no need to as JSON is the default and will remain so.
+                </p>
+                <table class="table table-condensed">
+                    <thead>
+                        <tr>
+                            <th>HTTP Status</th>
+                            <th>Reason</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>400 Bad Request</td>
+                            <td>You did not provide a valid database or a query sequence</td>
+                        </tr>
+                        <tr>
+                            <td>500 Internal Server Error</td>
+                            <td>An unexpected error occurred while processing your request</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p>
+                    If you run into issues, please <a href="mailto:mullspt+cfar@uw.edu">let us know</a>!
+                </p>
+
+                <hr>
+                <p>
+                    Created by Thomas Sibley of the
+                    <a href="http://mullinslab.microbiol.washington.edu">Mullins Lab</a>
+                    at the University of Washington, Department of Microbiology.
+                </p>
+                <p>
+                    Questions? <a href="mailto:mullspt+cfar@uw.edu">Drop us a line</a>.
+                </p>
+                <p>
+                    <a href="https://github.com/MullinsLab/MasterBlaster">Source code</a>
+                </p>
+            </div>
+            <div class="col-md-6">
+                <h2>Examples</h2>
+<a name="curl"></a>
+<h3>curl</h3>
+<pre>
+curl -X POST http://indra.mullins.microbiol.washington.edu/masterblaster/blast \
+     --data db=HXB2 \
+     --data query=TCATTATATAATACAGTAGCAACCCTCTATTGTGTGCATCAAAGG
+</pre>
+<pre class="pre-scrollable">
+&lt;?xml version="1.0"?&gt;
+&lt;!DOCTYPE BlastOutput PUBLIC "-//NCBI//NCBI BlastOutput/EN" "http://www.ncbi.nlm.nih.gov/dtd/NCBI_BlastOutput.dtd"&gt;
+&lt;BlastOutput&gt;
+  &lt;BlastOutput_program&gt;blastn&lt;/BlastOutput_program&gt;
+  &lt;BlastOutput_version&gt;BLASTN 2.2.30+&lt;/BlastOutput_version&gt;
+  &lt;BlastOutput_reference&gt;Zheng Zhang, Scott Schwartz, Lukas Wagner, and Webb Miller (2000), &quot;A greedy algorithm for aligning DNA sequences&quot;, J Comput Biol 2000; 7(1-2):203-14.&lt;/BlastOutput_reference&gt;
+  &lt;BlastOutput_db&gt;/opt/home/apps/masterblaster/db/HXB2&lt;/BlastOutput_db&gt;
+  &lt;BlastOutput_query-ID&gt;Query_1&lt;/BlastOutput_query-ID&gt;
+  &lt;BlastOutput_query-def&gt;No definition line&lt;/BlastOutput_query-def&gt;
+  &lt;BlastOutput_query-len&gt;45&lt;/BlastOutput_query-len&gt;
+  &lt;BlastOutput_param&gt;
+    &lt;Parameters&gt;
+      &lt;Parameters_expect&gt;10&lt;/Parameters_expect&gt;
+      &lt;Parameters_sc-match&gt;1&lt;/Parameters_sc-match&gt;
+      &lt;Parameters_sc-mismatch&gt;-2&lt;/Parameters_sc-mismatch&gt;
+      &lt;Parameters_gap-open&gt;0&lt;/Parameters_gap-open&gt;
+      &lt;Parameters_gap-extend&gt;0&lt;/Parameters_gap-extend&gt;
+      &lt;Parameters_filter&gt;L;m;&lt;/Parameters_filter&gt;
+    &lt;/Parameters&gt;
+  &lt;/BlastOutput_param&gt;
+&lt;BlastOutput_iterations&gt;
+&lt;Iteration&gt;
+  &lt;Iteration_iter-num&gt;1&lt;/Iteration_iter-num&gt;
+  &lt;Iteration_query-ID&gt;Query_1&lt;/Iteration_query-ID&gt;
+  &lt;Iteration_query-def&gt;No definition line&lt;/Iteration_query-def&gt;
+  &lt;Iteration_query-len&gt;45&lt;/Iteration_query-len&gt;
+&lt;Iteration_hits&gt;
+&lt;Hit&gt;
+  &lt;Hit_num&gt;1&lt;/Hit_num&gt;
+  &lt;Hit_id&gt;gnl|BL_ORD_ID|0&lt;/Hit_id&gt;
+  &lt;Hit_def&gt;K03455|HIVHXB2CG&lt;/Hit_def&gt;
+  &lt;Hit_accession&gt;0&lt;/Hit_accession&gt;
+  &lt;Hit_len&gt;9719&lt;/Hit_len&gt;
+  &lt;Hit_hsps&gt;
+    &lt;Hsp&gt;
+      &lt;Hsp_num&gt;1&lt;/Hsp_num&gt;
+      &lt;Hsp_bit-score&gt;84.2195&lt;/Hsp_bit-score&gt;
+      &lt;Hsp_score&gt;45&lt;/Hsp_score&gt;
+      &lt;Hsp_evalue&gt;1.46556e-20&lt;/Hsp_evalue&gt;
+      &lt;Hsp_query-from&gt;1&lt;/Hsp_query-from&gt;
+      &lt;Hsp_query-to&gt;45&lt;/Hsp_query-to&gt;
+      &lt;Hsp_hit-from&gt;1018&lt;/Hsp_hit-from&gt;
+      &lt;Hsp_hit-to&gt;1062&lt;/Hsp_hit-to&gt;
+      &lt;Hsp_query-frame&gt;1&lt;/Hsp_query-frame&gt;
+      &lt;Hsp_hit-frame&gt;1&lt;/Hsp_hit-frame&gt;
+      &lt;Hsp_identity&gt;45&lt;/Hsp_identity&gt;
+      &lt;Hsp_positive&gt;45&lt;/Hsp_positive&gt;
+      &lt;Hsp_gaps&gt;0&lt;/Hsp_gaps&gt;
+      &lt;Hsp_align-len&gt;45&lt;/Hsp_align-len&gt;
+      &lt;Hsp_qseq&gt;TCATTATATAATACAGTAGCAACCCTCTATTGTGTGCATCAAAGG&lt;/Hsp_qseq&gt;
+      &lt;Hsp_hseq&gt;TCATTATATAATACAGTAGCAACCCTCTATTGTGTGCATCAAAGG&lt;/Hsp_hseq&gt;
+      &lt;Hsp_midline&gt;|||||||||||||||||||||||||||||||||||||||||||||&lt;/Hsp_midline&gt;
+    &lt;/Hsp&gt;
+  &lt;/Hit_hsps&gt;
+&lt;/Hit&gt;
+&lt;/Iteration_hits&gt;
+  &lt;Iteration_stat&gt;
+    &lt;Statistics&gt;
+      &lt;Statistics_db-num&gt;1&lt;/Statistics_db-num&gt;
+      &lt;Statistics_db-len&gt;9719&lt;/Statistics_db-len&gt;
+      &lt;Statistics_hsp-len&gt;11&lt;/Statistics_hsp-len&gt;
+      &lt;Statistics_eff-space&gt;330072&lt;/Statistics_eff-space&gt;
+      &lt;Statistics_kappa&gt;0.46&lt;/Statistics_kappa&gt;
+      &lt;Statistics_lambda&gt;1.28&lt;/Statistics_lambda&gt;
+      &lt;Statistics_entropy&gt;0.85&lt;/Statistics_entropy&gt;
+    &lt;/Statistics&gt;
+  &lt;/Iteration_stat&gt;
+&lt;/Iteration&gt;
+&lt;/BlastOutput_iterations&gt;
+&lt;/BlastOutput&gt;
+</pre>
+
+<a name="perl"></a>
+<h3>Perl</h3>
+<pre>
+#!/usr/bin/env perl
+use strict;
+use warnings;
+
+use LWP::UserAgent;
+my $ua = LWP::UserAgent-&gt;new;
+sub blast {
+    my $response = $ua-&gt;post(
+        'http://indra.mullins.microbiol.washington.edu/masterblaster/blast',
+        {
+            @_,
+            dust =&gt; 'no',
+            max_target_seqs =&gt; 10,
+        }
+    );
+    die "Request failed: ", $response-&gt;status_line
+        unless $response-&gt;is_success;
+    return $response-&gt;decoded_content;
+}
+
+my $xml = blast( db =&gt; 'HXB2', query =&gt; 'TCATTATATAATACAGTAGCAACCCTCTATTGTGTGCATCAAAGG' );
+print $xml;
+</pre>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
