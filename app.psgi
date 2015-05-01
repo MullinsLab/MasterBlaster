@@ -138,7 +138,7 @@ package MasterBlaster::Runner {
         my $self = shift;
         my $blast = [ $self->path, $self->opts ];
         my ($xml, $err);
-        IPC::Run::run($blast, \$self->query, \$xml, \$err, IPC::Run::timeout(30))
+        IPC::Run::run($blast, \$self->query, \$xml, \$err, IPC::Run::timeout(240))
             or die "error running blast: $err";
         return $xml;
     }
