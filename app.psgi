@@ -64,7 +64,7 @@ package MasterBlaster::Web {
               [ map { "$_\n" } @{$_[0]->valid_dbs} ] ]
         },
         sub (POST + /blast + %:db=&:query=&:dust~&:max_target_seqs~) {
-            my ($self, $db, $query) = @_;
+            my ($self) = @_;
             try {
                 return $self->error(HTTP_BAD_REQUEST, "invalid db")
                     unless $self->is_valid_db( $_{db} );
